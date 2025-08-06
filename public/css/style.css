@@ -1,0 +1,53 @@
+body {
+    background-image: url('background.png');
+    background-repeat: no-repeat;
+    background-size: cover; 
+    background-position: center; 
+    
+    display: flex;
+    flex-direction: column; /* stack children vertically */
+    align-items: center;     /* center horizontally */
+    
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 50px; /* optional spacing from top */
+}
+
+.top-container {
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    font-family: 'Monoton';
+    text-shadow: 15px 15px 25px goldenrod;
+    
+}
+
+.bottom-container {
+    text-align: center;
+    color: white;
+    font-family: 'Monoton';
+    margin-top: 20px;
+    font-size: 18px;
+    text-shadow: 13px 13px 23px goldenrod;
+}
+
+#videoId{
+    width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Monoton';
+    border: 1px solid #ccc;
+    font-size: 16px;
+
+}
+
+#convert-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #441db9;
+    font-family: 'Monoton';
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}

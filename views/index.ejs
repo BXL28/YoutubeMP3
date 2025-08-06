@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>YouTube To Mp3 Converter</title>
+</head>
+<body>
+
+    <div class="top-container">
+        <form action="/convert-mp3" method="POST" id="form">
+            <h1><i class="fab fa-youtube"></i>YouTube To Mp3 Converter</h1>
+            <h4>Enter Video ID</h4>
+
+            <div>
+                <input type="text" name="videoId" id="videoId" placeholder="Enter Video ID" required>
+                <button  id="convert-btn" type="submit">Convert</button>
+            </div>
+        </form>
+    </div>
+
+    <div class ="bottom-container">
+        <% if (typeof success !== 'undefined'&& success) { %>
+            <div class="success">
+                <p><%=song_title %></p>
+                <% if (success) { %>
+  <p><strong></strong> </p>
+  <a href="/download-mp3?url=<%= encodeURIComponent(song_link) %>&title=<%= encodeURIComponent(song_title) %>" download>
+    <button>Download MP3</button>
+  </a>
+<% } %>
+            </div>
+        <% } else if (typeof success !== 'undefined' && !success) { %>
+            <div class="error">
+                <p><%= message %></p>
+            </div>
+        <% } %>
+
+
+    </div> 
+    
+</body>
+</html>
