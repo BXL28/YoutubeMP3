@@ -22,11 +22,11 @@ const ytDlpBinaryPath = path.join(tempDir, 'yt-dlp');
 async function ensureYtDlp() {
     if (!fs.existsSync(ytDlpBinaryPath)) {
         console.log('Downloading standalone Linux binary...');
-        // We use the direct URL to the standalone Linux release
-        await ytDlp.downloadFromGithub(
+        // FIX: Call the method on the Class 'YTDlpWrap', not an undefined 'ytDlp'
+        await YTDlpWrap.downloadFromGithub(
             ytDlpBinaryPath, 
             'latest', 
-            'yt-dlp_linux' // This version has Python bundled
+            'yt-dlp_linux' 
         ); 
         fs.chmodSync(ytDlpBinaryPath, '755');
     }
