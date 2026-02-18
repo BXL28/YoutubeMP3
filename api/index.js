@@ -61,11 +61,13 @@ app.post("/convert-mp3", async (req, res) => {
     
     // Correct syntax for yt-dlp-exec
     await ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
-      extractAudio: true,
-      audioFormat: 'mp3',
-      output: tempOutput,
-      ffmpegLocation: ffmpegStatic // Points to static binary for conversion
-    });
+    extractAudio: true,
+    audioFormat: 'mp3',
+    output: tempOutput,
+    ffmpegLocation: ffmpegStatic,
+    // ADD THIS LINE: It tells the library to use the standalone binary if possible
+    binaryPath: path.join(__dirname, '../node_modules/yt-dlp-exec/bin/yt-dlp')
+});
 
     let title = `Song_${videoId}`;
 
