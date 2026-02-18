@@ -41,29 +41,29 @@ app.post("/convert-mp3", async (req, res) => {
   try {
     console.log('Starting download process...');
     
-    // 1. Define Node Path and Cookie Paths
+ 
     const nodePath = process.execPath; 
-    const srcCookies = path.join(process.cwd(), 'cookies.txt');
-    const writableCookies = path.join(os.tmpdir(), 'cookies.txt');
+    
 
-    // 2. Copy cookies to writable directory to prevent "Read-only file system" error
-    if (fs.existsSync(srcCookies)) {
-        fs.copyFileSync(srcCookies, writableCookies);
-        console.log('Cookies copied to writable storage.');
-    } else {
-        console.warn('Warning: cookies.txt not found in project root.');
-    }
-
-    // 3. Execute yt-dlp with optimized Vercel flags
     await ytDlp.execPromise([
         `https://www.youtube.com/watch?v=${videoId}`,
         '-x',
         '--audio-format', 'mp3',
         '--ffmpeg-location', ffmpegStatic,
-        '--cookies', writableCookies, 
+        
+        // --- THE DISGUISE FLAGS ---
+        // 1. Pretend to be a real Chrome browser on Windows
+        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        
+        // 2. Use the Android client (YouTube is often less strict with mobile app traffic)
+        '--extractor-args', 'youtube:player_client=android,web',
+        
+        // 3. General stability flags for Serverless
         '--no-cache-dir',
         '--no-check-certificates',
         '--js-runtimes', `node:${nodePath}`,
+        // --------------------------
+
         '-o', tempOutput
     ]);
 
