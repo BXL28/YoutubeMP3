@@ -19,18 +19,27 @@ app.use(express.json());
 
 // Helper function to download yt-dlp binary if it's missing
 const ytDlpBinaryPath = path.join(tempDir, 'yt-dlp');
+const fs = require('fs').promises; // Use promise-based fs
+
 async function ensureYtDlp() {
-    if (!fs.existsSync(ytDlpBinaryPath)) {
-        console.log('Downloading standalone Linux binary...');
-        // FIX: Call the method on the Class 'YTDlpWrap', not an undefined 'ytDlp'
+    const ytDlpBinaryPath = path.join(os.tmpdir(), 'yt-dlp');
+    
+    // Check if it already exists and is executable
+    try {
+        await fs.access(ytDlpBinaryPath, require('fs').constants.X_OK);
+        return ytDlpBinaryPath;
+    } catch (e) {
+        // If not, we download and set permissions
+        console.log('Downloading and setting permissions for standalone binary...');
         await YTDlpWrap.downloadFromGithub(
             ytDlpBinaryPath, 
             'latest', 
             'yt-dlp_linux' 
         ); 
-        fs.chmodSync(ytDlpBinaryPath, '755');
+        // Force full permissions: Read, Write, and Execute for owner
+        await fs.chmod(ytDlpBinaryPath, 0o755);
+        return ytDlpBinaryPath;
     }
-    return ytDlpBinaryPath;
 }
 
 app.get("/", (req, res) => res.render("index"));
