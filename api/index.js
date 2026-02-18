@@ -57,18 +57,18 @@ app.post("/convert-mp3", async (req, res) => {
 
   const tempOutput = path.join(tempDir, `ytmp3_${Date.now()}.mp3`);
 
-  try {
-  console.log('Starting download with yt-dlp-wrap...');
-  
-  // yt-dlp-wrap uses an array of arguments
-  await ytDlp.execPromise([
-    `https://www.youtube.com/watch?v=${videoId}`,
-    '-x', // Extract audio
-    '--audio-format', 'mp3',
-    '--audio-quality', '0',
-    '--ffmpeg-location', ffmpegStatic, // Crucial for Vercel
-    '-o', tempOutput
-  ]);
+ try {
+    console.log('Downloading via yt-dlp-wrap...');
+    
+    // Use an array of arguments to avoid shell environment issues
+    await ytDlp.execPromise([
+        `https://www.youtube.com/watch?v=${videoId}`,
+        '-x', 
+        '--audio-format', 'mp3',
+        '--audio-quality', '0',
+        '--ffmpeg-location', ffmpegStatic, // Directs it to your static binary
+        '-o', tempOutput
+    ]);
 
     let title = `Song_${videoId}`;
 
