@@ -41,20 +41,23 @@ app.post("/convert-mp3", async (req, res) => {
     console.log('Starting download with local standalone binary...');
     
     // Define paths for Vercel environment
-    const cookiesPath = path.join(process.cwd(), 'cookies.txt'); 
-    const nodePath = process.execPath;
+    const srcCookies = path.join(process.cwd(), 'cookies.txt');
+    const writableCookies = path.join('/tmp', 'cookies.txt');
 
-    // Execute yt-dlp
+    // Copy the cookies file to the writable /tmp folder
+    if (fs.existsSync(srcCookies)) {
+        fs.copyFileSync(srcCookies, writableCookies);
+    }
+
     await ytDlp.execPromise([
         `https://www.youtube.com/watch?v=${videoId}`,
         '-x',
         '--audio-format', 'mp3',
         '--ffmpeg-location', ffmpegStatic,
-        '--cookies', cookiesPath,
-        '--no-write-cookies',              
-        '--no-cache-dir',                  
-        '--js-runtimes', `node:${nodePath}`,
+        '--cookies', writableCookies, // Use the COPY in /tmp
+        '--no-cache-dir',
         '--no-check-certificates',
+        '--js-runtimes', `node:${nodePath}`,
         '-o', tempOutput
     ]);
 
