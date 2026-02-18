@@ -74,16 +74,18 @@
                         const data2 = await res2.json();
                         if (!data2.success) throw new Error(data2.message);
 
-                        // Success!
+                        // Success State
                         overlay.style.display = 'none';
+                        const encodedTitle = encodeURIComponent(data2.song_title);
                         results.innerHTML = `
                             <div class="success">
-                                <p>${data2.song_title}</p>
-                                <a href="/download/${data2.tempFilename}"><button class="download-btn">Download MP3</button></a>
+                                <p style="color: white; font-family: 'Press Start 2P';">${data2.song_title}</p>
+                                <a href="/download/${data2.tempFilename}?title=${encodedTitle}">
+                                    <button class="download-btn">Download MP3</button>
+                                </a>
                             </div>`;
                     }
                 }, 1000);
-
             } catch (err) {
                 overlay.style.display = 'none';
                 alert("Error: " + err.message);
