@@ -7,8 +7,9 @@ const os = require('os');
 const tempDir = os.tmpdir();
 
 // Use yt-dlp-exec for automatic binary management
-const { exec: ytdlp } = require('yt-dlp-exec');
 const ffmpegStatic = require('ffmpeg-static');
+const YTDlpWrap = require('yt-dlp-wrap').default;
+const ytDlp = new YTDlpWrap();
 
 const app = express();
 
@@ -57,17 +58,17 @@ app.post("/convert-mp3", async (req, res) => {
   const tempOutput = path.join(tempDir, `ytmp3_${Date.now()}.mp3`);
 
   try {
-    console.log('Starting download with yt-dlp-exec...');
-    
-    // Correct syntax for yt-dlp-exec
-    await ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
-    extractAudio: true,
-    audioFormat: 'mp3',
-    output: tempOutput,
-    ffmpegLocation: ffmpegStatic,
-    // ADD THIS LINE: It tells the library to use the standalone binary if possible
-    binaryPath: path.join(__dirname, '../node_modules/yt-dlp-exec/bin/yt-dlp')
-});
+  console.log('Starting download with yt-dlp-wrap...');
+  
+  // yt-dlp-wrap uses an array of arguments
+  await ytDlp.execPromise([
+    `https://www.youtube.com/watch?v=${videoId}`,
+    '-x', // Extract audio
+    '--audio-format', 'mp3',
+    '--audio-quality', '0',
+    '--ffmpeg-location', ffmpegStatic, // Crucial for Vercel
+    '-o', tempOutput
+  ]);
 
     let title = `Song_${videoId}`;
 
