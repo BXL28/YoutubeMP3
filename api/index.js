@@ -51,19 +51,22 @@ app.post("/get-link", async (req, res) => {
 app.post("/apply-effect", async (req, res) => {
     const { downloadUrl, effect, videoTitle } = req.body;
     const filename = `processed_${Date.now()}.mp3`;
-    const tempOutput = path.join(tempDir, filename);
+    const tempOutput = path.join(os.tmpdir(), filename);
 
     try {
         let ffmpegArgs = ['-i', downloadUrl, '-y'];
         
-        // Applying requested audio effects
-        if (effect === 'sped_up') {
-            ffmpegArgs.push('-af', 'atempo=1.2');
-        } else if (effect === 'hq_8D') {
-            ffmpegArgs.push('-af', 'apulsator=mode=sine:amount=0.5:offset_l=0:offset_r=0.5:hz=0.125,loudnorm=I=-16:TP=-1:LRA=4,volume=0.9');
-        } else if (effect === 'slow_reverb') {
-            ffmpegArgs.push('-af', 'volume=0.8,asetrate=44100*0.8909,atempo=0.85,aresample=44100:resampler=swr:internal_sample_fmt=fltp,lowpass=f=5000,chorus=0.4:0.4:55:0.4:1.5:0.04,loudnorm=I=-14:TP=-1.5:LRA=7,alimiter=limit=0.95');
-        }
+        // Define human-readable labels for the filename
+        const effectLabels = {
+            'normal': 'Normal',
+            'sped_up': 'Sped Up',
+            'hq_8D': '8D Audio',
+            'slow_reverb': 'Slowed Reverb'
+        };
+
+        if (effect === 'sped_up') ffmpegArgs.push('-af', 'atempo=1.2');
+        else if (effect === 'hq_8D') ffmpegArgs.push('-af', 'apulsator=mode=sine:amount=0.5:offset_l=0:offset_r=0.5:hz=0.125,loudnorm=I=-16:TP=-1:LRA=4,volume=0.9');
+        else if (effect === 'slow_reverb') ffmpegArgs.push('-af', 'volume=0.8,asetrate=44100*0.8909,atempo=0.85,aresample=44100:resampler=swr:internal_sample_fmt=fltp,lowpass=f=5000,chorus=0.4:0.4:55:0.4:1.5:0.04,loudnorm=I=-14:TP=-1.5:LRA=7,alimiter=limit=0.95');
         
         ffmpegArgs.push(tempOutput);
 
@@ -72,7 +75,14 @@ app.post("/apply-effect", async (req, res) => {
             proc.on('close', (code) => code === 0 ? resolve() : reject(new Error("FFmpeg failed")));
         });
 
-        res.json({ success: true, song_title: videoTitle, tempFilename: filename });
+        // Construct the final title with the effect tag
+        const finalTitle = `${videoTitle} (${effectLabels[effect] || 'Processed'})`;
+
+        res.json({ 
+            success: true, 
+            song_title: finalTitle, 
+            tempFilename: filename 
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
