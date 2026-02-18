@@ -51,6 +51,8 @@ app.post("/convert-mp3", async (req, res) => {
         '--audio-format', 'mp3',
         '--ffmpeg-location', ffmpegStatic,
         '--cookies', cookiesPath,
+        '--no-write-cookies',              
+        '--no-cache-dir',                  
         '--js-runtimes', `node:${nodePath}`,
         '--no-check-certificates',
         '-o', tempOutput
