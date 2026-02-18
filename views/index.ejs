@@ -4,74 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&display=swap" rel="stylesheet">
-    
-    
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>YouTube To Mp3 Converter</title>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
     <div class="top-container">
-        <form action="/convert-mp3" method="POST" id="form">
-            <h1>YouTube To Mp3 Converter</h1>
-            <h4 style="font-family: 'Press Start 2P', monospace;">Enter Video ID</h4>
-            
-            <div class="form-group">
-                <input type="text" name="videoId" id="videoId" placeholder="Enter Video ID" required>
-                <label for="audioEffect">Audio style:</label>
-                <select name="audioEffect" id="audioEffect">
-                    <option value="normal" selected>Normal</option>
-                    <option value="sped_up">Sped up</option>
-                    <option value="hq_8D">8D Audio</option>
-                    <option value="slow_reverb">Slowed + Reverb</option>
-                </select>
-                <button id="convert-btn" type="submit">Convert</button>
-            </div>
-        </form>
+        <h1>YouTube To Mp3 Converter</h1>
+        <div class="form-group">
+            <input type="text" id="videoId" placeholder="Enter Video ID" required>
+            <select id="audioEffect">
+                <option value="normal" selected>Normal</option>
+                <option value="sped_up">Sped up</option>
+                <option value="hq_8D">8D Audio</option>
+                <option value="slow_reverb">Slowed + Reverb</option>
+            </select>
+            <button id="convert-btn" onclick="runConversion()">Convert</button>
+        </div>
     </div>
 
     <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
-        <lottie-player 
-            src="/UkuleleLoading.json" 
-            background="transparent" 
-            speed="1" 
-            style="width: 300px; height: 300px;" 
-            loop 
-            autoplay>
-        </lottie-player>
-        <p style="color: white; font-family: 'Press Start 2P', monospace; margin-top: 20px;">Applying Effects...</p>
+        <lottie-player src="/UkuleleLoading.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+        <p id="loading-msg" style="color: white; font-family: 'Press Start 2P', cursive; margin-top: 20px;">Fetching link...</p>
+        <p id="countdown" style="color: #ff4757; font-family: 'Press Start 2P', cursive; margin-top: 10px;"></p>
     </div>
-    <div class="bottom-container">
-        <% if (typeof success !== 'undefined' && success) { %>
-            <div class="success">
-                <p><%= song_title %></p>
-                <a href="/download-mp3?url=<%= encodeURIComponent(song_link) %>&title=<%= encodeURIComponent(song_title) %>" download>
-                    <button class="download-btn">Download MP3</button>
-                </a>
-            </div>
-        <% } else if (typeof success !== 'undefined' && !success) { %>
-            <div class="error">
-                <p><%= message %></p>
-            </div>
-        <% } %>
-    </div> 
+
+    <div class="bottom-container" id="results"></div> 
 
     <script>
-        const form = document.getElementById('form');
-        const overlay = document.getElementById('loadingOverlay');
-        const convertBtn = document.getElementById('convert-btn');
+        async function runConversion() {
+            const vid = document.getElementById('videoId').value;
+            const effect = document.getElementById('audioEffect').value;
+            const overlay = document.getElementById('loadingOverlay');
+            const msg = document.getElementById('loading-msg');
+            const count = document.getElementById('countdown');
+            const results = document.getElementById('results');
 
-        form.addEventListener('submit', function() {
-           
-            const bottomContainer = document.querySelector('.bottom-container');
-            if (bottomContainer) bottomContainer.style.display = 'none';
+            if (!vid) return alert("Enter a Video ID");
+            overlay.style.display = 'flex';
+            results.innerHTML = '';
 
-            
-            convertBtn.textContent = 'Converting...';
+            try {
+                // Phase 1: Get link
+                const res1 = await fetch('/get-link', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ videoId: vid })
+                });
+                const data1 = await res1.json();
+                if (!data1.success) throw new Error(data1.message);
 
-            
-            overlay.style.setProperty('display', 'flex', 'important');
-        });
+                // Phase 2: 60s Countdown (Wait for server-side generation)
+                let timeLeft = 60;
+                msg.innerText = "API is generating the file...";
+                const timer = setInterval(async () => {
+                    timeLeft--;
+                    count.innerText = timeLeft + "s remaining";
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        count.innerText = "";
+                        msg.innerText = "Applying Audio Effects...";
+                        
+                        // Phase 3: Apply Effect
+                        const res2 = await fetch('/apply-effect', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ downloadUrl: data1.downloadUrl, effect, videoTitle: data1.videoTitle })
+                        });
+                        const data2 = await res2.json();
+                        if (!data2.success) throw new Error(data2.message);
+
+                        // Success!
+                        overlay.style.display = 'none';
+                        results.innerHTML = `
+                            <div class="success">
+                                <p>${data2.song_title}</p>
+                                <a href="/download/${data2.tempFilename}"><button class="download-btn">Download MP3</button></a>
+                            </div>`;
+                    }
+                }, 1000);
+
+            } catch (err) {
+                overlay.style.display = 'none';
+                alert("Error: " + err.message);
+            }
+        }
     </script>
 </body>
 </html>
