@@ -202,3 +202,28 @@ label {
 }
 
 
+/* Update this block to include .reset-btn */
+#convert-btn, .download-btn, #audioEffect, .reset-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 16px 32px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+    transition: all 0.3s ease;
+    min-width: 220px;
+    font-family: 'Press Start 2P', monospace !important;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    margin: 10px auto !important;
+}
+
+/* Update hover states */
+#convert-btn:hover, .download-btn:hover, #audioEffect:hover, .reset-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.7);
+}

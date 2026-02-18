@@ -113,15 +113,20 @@
                 // Encode title to handle special characters in the URL safely
                 const encodedTitle = encodeURIComponent(data2.song_title);
 
+                // Find this section inside your applyAudioEffects function
                 results.innerHTML = `
                     <div class="success">
-                        <p style="color: white; font-family: 'Press Start 2P'; margin-bottom: 15px;">
-                            SUCCESS: ${data2.song_title}
+                        <p style="color: white; font-family: 'Press Start 2P'; margin-bottom: 25px;">
+                            ${data2.song_title}
                         </p>
-                        <a href="/download/${data2.tempFilename}?title=${encodedTitle}">
+                        
+                        <a href="/download/${data2.tempFilename}?title=${encodedTitle}" style="text-decoration: none;">
                             <button class="download-btn">DOWNLOAD MP3</button>
                         </a>
-                        <button onclick="location.reload()" style="margin-top: 10px; background: none; border: 1px solid white; color: white; cursor: pointer;">Convert Another</button>
+                        
+                        <button onclick="location.reload()" class="reset-btn">
+                            CONVERT ANOTHER
+                        </button>
                     </div>
                 `;
             } catch (err) {
