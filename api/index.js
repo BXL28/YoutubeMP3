@@ -3,22 +3,20 @@ const express = require("express");
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
-const https = require("https");
 const os = require('os');
 const tempDir = os.tmpdir();
 
-// NEW: Linux-compatible binaries for Vercel
-const ffmpegStatic = require('ffmpeg-static');
+// Use yt-dlp-exec for automatic binary management
 const { exec: ytdlp } = require('yt-dlp-exec');
+const ffmpegStatic = require('ffmpeg-static');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// Pathing adjustments for Vercel /api folder
 app.set("views", path.join(__dirname, "../views")); 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -59,31 +57,24 @@ app.post("/convert-mp3", async (req, res) => {
   const tempOutput = path.join(tempDir, `ytmp3_${Date.now()}.mp3`);
 
   try {
-    console.log('Downloading with yt-dlp-exec...');
+    console.log('Starting download with yt-dlp-exec...');
     
-    // FIX: Using yt-dlp-exec instead of Windows .exe
+    // Correct syntax for yt-dlp-exec
     await ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
       extractAudio: true,
       audioFormat: 'mp3',
-      audioQuality: '0', // Highest quality
       output: tempOutput,
-      ffmpegLocation: ffmpegStatic // Points to Linux binary
+      ffmpegLocation: ffmpegStatic // Points to static binary for conversion
     });
 
     let title = `Song_${videoId}`;
-    try {
-        // Optional: Fetching title requires another call or using info object
-        title = `Song_${videoId}`; 
-    } catch (e) {}
 
     if (effect !== 'normal') {
       title += ` (${effect.replace('_', ' ').toUpperCase()})`;
-      
       const tempInput = tempOutput.replace('.mp3', '_input.mp3');
       fs.renameSync(tempOutput, tempInput);
 
       let ffmpegArgs = ['-i', tempInput, '-y', tempOutput];
-      
       if (effect === 'sped_up') {
         ffmpegArgs.splice(2, 0, '-filter:a', 'atempo=1.2');
       } else if (effect === 'hq_8D') {
@@ -93,12 +84,9 @@ app.post("/convert-mp3", async (req, res) => {
       }
 
       await new Promise((resolve, reject) => {
-        // FIX: Use the static path for the spawn command
         const ffmpegProc = spawn(ffmpegStatic, ffmpegArgs);
         ffmpegProc.on('close', (code) => code === 0 ? resolve() : reject(new Error('FFmpeg failed')));
-        ffmpegProc.stderr.on('data', (data) => console.log(`FFmpeg: ${data}`));
       });
-      
       if (fs.existsSync(tempInput)) fs.unlinkSync(tempInput);
     }
 
@@ -114,10 +102,9 @@ app.post("/convert-mp3", async (req, res) => {
   }
 });
 
-module.exports = app; // Export for Vercel
+module.exports = app;
 
 if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
-
