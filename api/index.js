@@ -114,11 +114,10 @@ app.post("/convert-mp3", async (req, res) => {
   }
 });
 
-// For Vercel, we export the app
-module.exports = app;
+module.exports = app; // Export for Vercel
 
-// Local listening for dev
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
 
