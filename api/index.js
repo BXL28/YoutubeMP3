@@ -40,21 +40,25 @@ app.post("/convert-mp3", async (req, res) => {
   try {
     console.log('Starting download with local standalone binary...');
     
-    // Define paths for Vercel environment
-    const srcCookies = path.join(process.cwd(), 'cookies.txt');
-    const writableCookies = path.join('/tmp', 'cookies.txt');
+    // 1. Define the Node Path (This fixes your current error)
+    const nodePath = process.execPath; 
 
-    // Copy the cookies file to the writable /tmp folder
+    // 2. Setup Cookies (Copying to /tmp to avoid the "Read-only" error)
+    const srcCookies = path.join(process.cwd(), 'cookies.txt');
+    const writableCookies = path.join(os.tmpdir(), 'cookies.txt');
+
     if (fs.existsSync(srcCookies)) {
-        fs.copyFileSync(srcCookies, writableCookies);
+        // We use the 'fs' module you imported at the top
+        require('fs').copyFileSync(srcCookies, writableCookies);
     }
 
+    // 3. Execute yt-dlp
     await ytDlp.execPromise([
         `https://www.youtube.com/watch?v=${videoId}`,
         '-x',
         '--audio-format', 'mp3',
         '--ffmpeg-location', ffmpegStatic,
-        '--cookies', writableCookies, // Use the COPY in /tmp
+        '--cookies', writableCookies, 
         '--no-cache-dir',
         '--no-check-certificates',
         '--js-runtimes', `node:${nodePath}`,
