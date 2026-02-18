@@ -1,7 +1,9 @@
-YouTube to MP3 Converter with Audio Effects
+                      YouTube to MP3 Converter
 A web-based application that allows users to download audio from YouTube videos with customizable sound effects.
 
-🚀 Features
+Link: https://youtube-mp-3-6q5eownp1-bxl28s-projects.vercel.app
+
+Features
 Easy Conversion: Download high-quality audio by simply providing the YouTube Video ID.
 
 Audio Customization: Apply effects before downloading:
@@ -19,18 +21,18 @@ Metadata Integration: Automatically fetches and applies the correct video title 
 🛠️ Technical Architecture
 To ensure stability and speed, this project utilizes a modern full-stack approach:
 
-Backend: Node.js & Express.
+  Backend: Node.js & Express.
+  
+  API Integration: Leverages RapidAPI for stable, high-speed YouTube data extraction and conversion.
+  
+  Audio Engine: Built with FFmpeg (fluent-ffmpeg) for real-time audio manipulation.
+  
+  Deployment: Optimized for Vercel, featuring a specialized architecture to bypass standard 10-second serverless execution limits.
 
-API Integration: Leverages RapidAPI for stable, high-speed YouTube data extraction and conversion.
-
-Audio Engine: Built with FFmpeg (fluent-ffmpeg) for real-time audio manipulation.
-
-Deployment: Optimized for Vercel, featuring a specialized architecture to bypass standard 10-second serverless execution limits.
-
-📖 How to Use
+How to Use:
 Locate the Video ID in a YouTube URL (the characters following v=).
 
-Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ → Video ID is dQw4w9WgXcQ
+Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1 → Video ID is dQw4w9WgXcQ
 
 Paste the ID into the input field.
 <img width="1858" height="916" alt="image" src="https://github.com/user-attachments/assets/fcd51620-f4de-42be-a2e9-5dbf747ac684" />
