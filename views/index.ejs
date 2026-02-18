@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    
+    <title>YouTube To Mp3 Converter</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body>
+    <div class="top-container">
+        <form action="/convert-mp3" method="POST" id="form">
+            <h1>YouTube To Mp3 Converter</h1>
+            <h4 style="font-family: 'Press Start 2P', monospace;">Enter Video ID</h4>
+            
+            <div class="form-group">
+                <input type="text" name="videoId" id="videoId" placeholder="Enter Video ID" required>
+                <label for="audioEffect">Audio style:</label>
+                <select name="audioEffect" id="audioEffect">
+                    <option value="normal" selected>Normal</option>
+                    <option value="sped_up">Sped up</option>
+                    <option value="hq_8D">8D Audio</option>
+                    <option value="slow_reverb">Slowed + Reverb</option>
+                </select>
+                <button id="convert-btn" type="submit">Convert</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
+        <lottie-player 
+            src="/UkuleleLoading.json" 
+            background="transparent" 
+            speed="1" 
+            style="width: 300px; height: 300px;" 
+            loop 
+            autoplay>
+        </lottie-player>
+        <p style="color: white; font-family: 'Press Start 2P', monospace; margin-top: 20px;">Applying Effects...</p>
+    </div>
+    <div class="bottom-container">
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="success">
+                <p><%= song_title %></p>
+                <a href="/download-mp3?url=<%= encodeURIComponent(song_link) %>&title=<%= encodeURIComponent(song_title) %>" download>
+                    <button class="download-btn">Download MP3</button>
+                </a>
+            </div>
+        <% } else if (typeof success !== 'undefined' && !success) { %>
+            <div class="error">
+                <p><%= message %></p>
+            </div>
+        <% } %>
+    </div> 
+
+    <script>
+        const form = document.getElementById('form');
+        const overlay = document.getElementById('loadingOverlay');
+        const convertBtn = document.getElementById('convert-btn');
+
+        form.addEventListener('submit', function() {
+           
+            const bottomContainer = document.querySelector('.bottom-container');
+            if (bottomContainer) bottomContainer.style.display = 'none';
+
+            
+            convertBtn.textContent = 'Converting...';
+
+            
+            overlay.style.setProperty('display', 'flex', 'important');
+        });
+    </script>
+</body>
+</html>
