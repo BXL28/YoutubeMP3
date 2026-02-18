@@ -35,24 +35,26 @@ app.post("/convert-mp3", async (req, res) => {
     return res.render("index", { success: false, message: "Please enter a video ID" });
   }
 
-  const tempOutput = path.join(tempDir, `ytmp3_${Date.now()}.mp3`);
+  // Use os.tmpdir() for everything - this is the ONLY writable spot on Vercel
+  const tempOutput = path.join(os.tmpdir(), `ytmp3_${Date.now()}.mp3`);
 
   try {
-    console.log('Starting download with local standalone binary...');
+    console.log('Starting download process...');
     
-    // 1. Define the Node Path (This fixes your current error)
+    // 1. Define Node Path and Cookie Paths
     const nodePath = process.execPath; 
-
-    // 2. Setup Cookies (Copying to /tmp to avoid the "Read-only" error)
     const srcCookies = path.join(process.cwd(), 'cookies.txt');
     const writableCookies = path.join(os.tmpdir(), 'cookies.txt');
 
+    // 2. Copy cookies to writable directory to prevent "Read-only file system" error
     if (fs.existsSync(srcCookies)) {
-        // We use the 'fs' module you imported at the top
-        require('fs').copyFileSync(srcCookies, writableCookies);
+        fs.copyFileSync(srcCookies, writableCookies);
+        console.log('Cookies copied to writable storage.');
+    } else {
+        console.warn('Warning: cookies.txt not found in project root.');
     }
 
-    // 3. Execute yt-dlp
+    // 3. Execute yt-dlp with optimized Vercel flags
     await ytDlp.execPromise([
         `https://www.youtube.com/watch?v=${videoId}`,
         '-x',
@@ -67,7 +69,7 @@ app.post("/convert-mp3", async (req, res) => {
 
     let title = `Song_${videoId}`;
 
-    // Apply audio effects if requested
+    // 4. Audio Processing
     if (effect !== 'normal') {
       title += ` (${effect.replace('_', ' ').toUpperCase()})`;
       const tempInput = tempOutput.replace('.mp3', '_input.mp3');
@@ -84,8 +86,9 @@ app.post("/convert-mp3", async (req, res) => {
 
       await new Promise((resolve, reject) => {
         const ffmpegProc = spawn(ffmpegStatic, ffmpegArgs);
-        ffmpegProc.on('close', (code) => code === 0 ? resolve() : reject(new Error('FFmpeg failed')));
+        ffmpegProc.on('close', (code) => code === 0 ? resolve() : reject(new Error('FFmpeg processing failed')));
       });
+
       if (fs.existsSync(tempInput)) fs.unlinkSync(tempInput);
     }
 
@@ -96,8 +99,8 @@ app.post("/convert-mp3", async (req, res) => {
     });
 
   } catch (err) {
-    console.error('Error:', err.message);
-    res.render("index", { success: false, message: `Error: ${err.message}` });
+    console.error('Final Error Catch:', err.message);
+    res.render("index", { success: false, message: `Conversion failed: ${err.message}` });
   }
 });
 
