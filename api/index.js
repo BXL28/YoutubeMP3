@@ -21,9 +21,14 @@ app.use(express.json());
 const ytDlpBinaryPath = path.join(tempDir, 'yt-dlp');
 async function ensureYtDlp() {
     if (!fs.existsSync(ytDlpBinaryPath)) {
-        console.log('Downloading yt-dlp binary from GitHub...');
-        await YTDlpWrap.downloadFromGithub(ytDlpBinaryPath);
-        fs.chmodSync(ytDlpBinaryPath, '755'); // Grant execute permissions for Linux
+        console.log('Downloading standalone Linux binary...');
+        // We use the direct URL to the standalone Linux release
+        await ytDlp.downloadFromGithub(
+            ytDlpBinaryPath, 
+            'latest', 
+            'yt-dlp_linux' // This version has Python bundled
+        ); 
+        fs.chmodSync(ytDlpBinaryPath, '755');
     }
     return ytDlpBinaryPath;
 }
