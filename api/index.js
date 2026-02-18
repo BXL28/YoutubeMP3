@@ -40,13 +40,20 @@ app.post("/convert-mp3", async (req, res) => {
   try {
     console.log('Starting download with local standalone binary...');
     
-    // Using execPromise with the local binary path
+    // Define paths for Vercel environment
+    const cookiesPath = path.join(process.cwd(), 'cookies.txt'); 
+    const nodePath = process.execPath;
+
+    // Execute yt-dlp
     await ytDlp.execPromise([
-      `https://www.youtube.com/watch?v=${videoId}`,
-      '-x',
-      '--audio-format', 'mp3',
-      '--ffmpeg-location', ffmpegStatic, // Points to your static FFmpeg binary
-      '-o', tempOutput
+        `https://www.youtube.com/watch?v=${videoId}`,
+        '-x',
+        '--audio-format', 'mp3',
+        '--ffmpeg-location', ffmpegStatic,
+        '--cookies', cookiesPath,
+        '--js-runtimes', `node:${nodePath}`,
+        '--no-check-certificates',
+        '-o', tempOutput
     ]);
 
     let title = `Song_${videoId}`;
