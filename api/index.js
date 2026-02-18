@@ -10,7 +10,16 @@ const tempDir = os.tmpdir();
 const ffmpegStatic = require('ffmpeg-static');
 const YTDlpWrap = require('yt-dlp-wrap').default;
 const ytDlp = new YTDlpWrap();
+const ytDlpPath = path.join(tempDir, 'yt-dlp');
 
+async function ensureYtDlp() {
+    if (!fs.existsSync(ytDlpPath)) {
+        console.log('Downloading yt-dlp binary...');
+        await YTDlpWrap.downloadFromGithub(ytDlpPath);
+        fs.chmodSync(ytDlpPath, '755'); // Give it permission to run
+    }
+    return ytDlpPath;
+}
 const app = express();
 
 // Pathing adjustments for Vercel /api folder
@@ -59,7 +68,8 @@ app.post("/convert-mp3", async (req, res) => {
 
  try {
     console.log('Downloading via yt-dlp-wrap...');
-    
+    const executablePath = await ensureYtDlp(); // Get the path to the downloaded file
+    const ytDlpCustom = new YTDlpWrap(executablePath);
     // Use an array of arguments to avoid shell environment issues
     await ytDlp.execPromise([
         `https://www.youtube.com/watch?v=${videoId}`,
