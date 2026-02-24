@@ -4,7 +4,7 @@
 **A web-based tool to download and customize YouTube audio with high-fidelity effects.**
 
 <div align="center">
-  <a href="https://youtube-mp-3-6q5eownp1-bxl28s-projects.vercel.app" target="_blank">
+  <a href="www.bxlyoutubetomp3.com" target="_blank">
     <b>View Live Project</b>
   </a>
 </div>
