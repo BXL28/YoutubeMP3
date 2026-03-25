@@ -1,229 +1,366 @@
+:root {
+  --bg: #1a1a1a;
+  --bg-elevated: #141414;
+  --surface: #242424;
+  --border: #383838;
+  --text: #ffffff;
+  --text-muted: #9a9a9a;
+  --primary: #e61e25;
+  --primary-hover: #ff2a32;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+  --font: "Montserrat", system-ui, -apple-system, sans-serif;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
-    background-image: url('background.png');
-    background-repeat: no-repeat;
-    background-size: cover; 
-    background-position: center; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;    
-    min-height: 100vh;
-    margin: 0;
-    padding-top: 50px;
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  color: var(--text);
+  background-color: var(--bg);
+  /* Charcoal + subtle grain / red accent (Music Juice–style) */
+  background-image:
+    radial-gradient(ellipse 85% 55% at 88% 8%, rgba(230, 30, 37, 0.14), transparent 52%),
+    radial-gradient(ellipse 55% 40% at 12% 92%, rgba(255, 255, 255, 0.04), transparent 48%),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 3px,
+      rgba(255, 255, 255, 0.018) 3px,
+      rgba(255, 255, 255, 0.018) 4px
+    );
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(1.5rem, 4vw, 3rem) 1.25rem 2.5rem;
+}
+
+main {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+main > * {
+  width: 100%;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+.brand__logo {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
+}
+
+.brand__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 4.5vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text);
+  text-transform: none;
+}
+
+.brand__title-accent {
+  color: var(--primary);
+}
+
+.brand__tagline {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.45;
+  max-width: 22rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 4vw, 2rem);
+  box-shadow: var(--shadow-card);
+  text-align: center;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    align-items: center;
-    max-width: 400px;
-}
-
-#videoId {
-    width: 350px;
-    padding: 15px;
-    border-radius: 10px;
-    font-family: 'Press Start 2P', monospace !important;
-    border: 2px solid #ccc;
-    font-size: 16px;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.35rem;
+  width: 100%;
 }
 
 label {
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 18px;
-    color: white;
-    text-shadow: 2px 2px 4px goldenrod;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-align: center;
+  width: 100%;
 }
 
-/* Gradient buttons/select */
-#convert-btn, .download-btn, #audioEffect {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 25px;
-    padding: 16px 32px;
-    color: white;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
-    transition: all 0.3s ease;
-    font-family: 'Monoton';
-    min-width: 220px;
-    font-family: 'Press Start 2P', monospace !important;
+.field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
 }
 
-#convert-btn:hover, .download-btn:hover, #audioEffect:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.7);
+.field-hint {
+  margin: 0.25rem auto 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 34rem;
 }
 
-
-/* PERFECT CENTER ALIGN */
-.top-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    width: fit-content !important;  
-    max-width: 500px !important;
-    margin: 0 auto !important;
-    padding: 20px 0 !important;    
+.field-hint code {
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg-elevated);
+  padding: 0.15em 0.45em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
-
-
-/* Form group inside perfectly centered */
-.top-container .form-group {
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 25px !important;
-    margin: 0 auto !important;
+#videoId {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Force center ALL children */
-.top-container *,
-.top-container .form-group * {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
+#videoId::placeholder {
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-/* Title/header perfect center */
-.top-container h1 {
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 1.8em !important;  
-    color: white !important;
-    text-shadow: 
-        0 0 10px #ffd700,
-        15px 15px 25px goldenrod !important;
-    line-height: 1.2 !important;
-    margin-bottom: 10px !important;
-    text-align: center !important;
+#videoId:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(230, 30, 37, 0.22);
 }
 
-.top-container h4 {
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 0.9em !important;
-    color: white !important;
-    text-shadow: 
-        0 0 8px #ffd700,
-        13px 13px 23px goldenrod !important;
-    margin-bottom: 30px !important;
-    text-align: center !important;
-    letter-spacing: 2px !important;
+#convert-btn,
+.download-btn,
+.reset-btn,
+#audioEffect {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: background-color 0.15s ease, transform 0.12s ease, color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-
-#videoId, #audioEffect, #convert-btn {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
-    align-items:center !important ;
+#convert-btn,
+.download-btn,
+.reset-btn {
+  text-transform: uppercase;
 }
 
-.bottom-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    width: 100% !important;
-    max-width: 500px !important;
-    margin: 0 auto !important;
-}
-
-.success {
-    width: fit-content !important;  
-    max-width: 90vw !important;
-    font-family: 'Press Start 2P', monospace !important;
-    font-size: 0.9em !important;
-    color: white !important;
-    text-shadow: 
-        0 0 8px #ffd700,
-        13px 13px 23px goldenrod !important;
-    margin-bottom: 30px !important;
-    text-align: center !important;
-    letter-spacing: 2px !important;
-}
-
+#convert-btn,
 .download-btn {
-    width: fit-content !important;
-    margin: 0 auto !important;
-    font-family: 'Press Start 2P', monospace !important;
+  background: var(--primary);
+  color: #fff;
 }
 
+#convert-btn:hover,
+.download-btn:hover {
+  background: var(--primary-hover);
+}
 
-.error p {
-    font-family: 'Press Start 2P', monospace !important;
-    color: white !important;
-    text-shadow: 10px 10px 20px goldenrod !important;
-    margin: 0 auto !important;
-    text-align: center !important;
+#convert-btn:active,
+.download-btn:active {
+  transform: scale(0.99);
+}
+
+.reset-btn {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.reset-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #555;
 }
 
 #audioEffect {
-    /* Removes the default gray/white browser styling */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border: none !important;
-    border-radius: 25px !important;
-    padding: 16px 40px 16px 20px !important;  /* Right padding for arrow */
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 16px !important;
-    font-family: 'Press Start 2P', monospace !important;
-    cursor: pointer !important;
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5) !important;
-    min-width: 220px !important;
-    height: 58px !important;
-    margin: 0 auto !important;
-    display: block !important;
-    position: relative !important;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(--primary);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  padding-left: 2.75rem;
+  padding-right: 2.75rem;
+  text-align: center;
+  text-align-last: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1.25rem;
+}
 
-    /* Adds a custom white arrow since appearance:none removes the default one */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 20px center !important;
-    background-size: 15px !important;
+#audioEffect:hover {
+  background-color: var(--primary-hover);
+}
+
+#audioEffect:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(230, 30, 37, 0.35);
 }
 
 #audioEffect option {
-    background-color: #4f2dcad7 !important; 
-    color: white !important;
-    font-family: 'Press Start 2P', monospace !important;
-    padding: 10px;
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
-
-/* Update this block to include .reset-btn */
-#convert-btn, .download-btn, #audioEffect, .reset-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 25px;
-    padding: 16px 32px;
-    color: white;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
-    transition: all 0.3s ease;
-    min-width: 220px;
-    font-family: 'Press Start 2P', monospace !important;
-    text-align: center;
-    text-decoration: none;
-    display: block;
-    margin: 10px auto !important;
+.bottom-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-/* Update hover states */
-#convert-btn:hover, .download-btn:hover, #audioEffect:hover, .reset-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.7);
+.success {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 4vw, 2rem);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.success .track-title {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.success .actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.success .actions a {
+  width: 100%;
+  max-width: 100%;
+}
+
+.error {
+  background: rgba(230, 30, 37, 0.1);
+  border: 1px solid rgba(230, 30, 37, 0.45);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+
+.error p {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffcccc;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 26, 26, 0.94);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+}
+
+.loading-overlay.is-visible {
+  display: flex;
+}
+
+.loading-overlay__msg {
+  margin: 1.25rem 0 0;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.45;
+}
+
+.loading-overlay__countdown {
+  margin: 0.75rem 0 0;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+  min-height: 1.5em;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.loading-overlay lottie-player {
+  width: min(280px, 70vw);
+  height: min(280px, 70vw);
 }

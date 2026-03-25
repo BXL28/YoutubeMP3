@@ -3,65 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <title>YouTube To Mp3 Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>YouTube to MP3</title>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
-    <div class="top-container">
-        <div id="converter-form">
-            <h1>YouTube To Mp3 Converter</h1>
-            <h4 style="font-family: 'Press Start 2P', monospace;">Enter Video ID</h4>
-            
+    <main>
+        <header class="brand">
+            <img class="brand__logo" src="/images/logo.svg" width="72" height="72" alt="">
+            <h1 class="brand__title">YouTube to <span class="brand__title-accent">MP3</span></h1>
+            <p class="brand__tagline">Paste a video ID and choose an audio style</p>
+        </header>
+
+        <div class="card" id="converter-form">
             <div class="form-group">
-                <input type="text" id="videoId" placeholder="Enter Video ID" required>
-                <label for="audioEffect">Audio style:</label>
-                <select id="audioEffect">
-                    <option value="normal" selected>Normal</option>
-                    <option value="sped_up">Sped up</option>
-                    <option value="hq_8D">8D Audio</option>
-                    <option value="slow_reverb">Slowed + Reverb</option>
-                </select>
-                <button id="convert-btn" onclick="startConversion()">Convert</button>
+                <div class="field">
+                    <label for="videoId">Video ID</label>
+                    <input type="text" id="videoId" placeholder="e.g. dQw4w9WgXcQ" required autocomplete="off">
+                    <p class="field-hint">Use the ID after <code>v=</code> or after <code>youtu.be/</code>.</p>
+                </div>
+                <div class="field">
+                    <label for="audioEffect">Audio style</label>
+                    <select id="audioEffect">
+                        <option value="normal" selected>Normal</option>
+                        <option value="sped_up">Sped up</option>
+                        <option value="hq_8D">8D audio</option>
+                        <option value="slow_reverb">Slowed + reverb</option>
+                    </select>
+                </div>
+                <button type="button" id="convert-btn" onclick="startConversion()">Convert</button>
             </div>
         </div>
-    </div>
 
-    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
-        <lottie-player 
-            src="/UkuleleLoading.json" 
-            background="transparent" 
-            speed="1" 
-            style="width: 300px; height: 300px;" 
-            loop 
+        <div class="bottom-container" id="results"></div>
+    </main>
+
+    <div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
+        <lottie-player
+            src="/UkuleleLoading.json"
+            background="transparent"
+            speed="1"
+            loop
             autoplay>
         </lottie-player>
-        <p id="loading-msg" style="color: white; font-family: 'Press Start 2P', monospace; margin-top: 20px; text-align: center;">Preparing Request...</p>
-        <p id="countdown" style="color: #ff4757; font-family: 'Press Start 2P', monospace; font-size: 18px; margin-top: 15px;"></p>
+        <p id="loading-msg" class="loading-overlay__msg">Preparing request…</p>
+        <p id="countdown" class="loading-overlay__countdown"></p>
     </div>
 
-    <div class="bottom-container" id="results">
-        </div> 
-
     <script>
+        function setOverlayVisible(visible) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.toggle('is-visible', visible);
+            overlay.setAttribute('aria-hidden', visible ? 'false' : 'true');
+        }
+
         async function startConversion() {
             const vid = document.getElementById('videoId').value;
             const effect = document.getElementById('audioEffect').value;
-            const overlay = document.getElementById('loadingOverlay');
             const msg = document.getElementById('loading-msg');
             const countdownEl = document.getElementById('countdown');
             const results = document.getElementById('results');
 
-            if (!vid) return alert("Please enter a Video ID!");
+            if (!vid) return alert('Please enter a video ID.');
 
-            // Show overlay and clear previous results
-            overlay.style.setProperty('display', 'flex', 'important');
+            setOverlayVisible(true);
             results.innerHTML = '';
-            msg.innerText = "Fetching download link from API...";
+            msg.innerText = 'Fetching download link…';
 
             try {
-                // STEP 1: Get the link from backend
                 const res1 = await fetch('/get-link', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -70,33 +84,33 @@
                 const data1 = await res1.json();
                 if (!data1.success) throw new Error(data1.message);
 
-                // STEP 2: Client-side 60s Wait (Bypasses Vercel 10s Timeout)
                 let timeLeft = 60;
-                msg.innerText = "API is generating the file. Please wait...";
-                
+                msg.innerText = 'Generating file. This can take up to a minute…';
+
                 const timer = setInterval(async () => {
                     timeLeft--;
-                    countdownEl.innerText = `${timeLeft}s remaining`;
+                    countdownEl.innerText = timeLeft > 0 ? `${timeLeft}s remaining` : '';
 
                     if (timeLeft <= 0) {
                         clearInterval(timer);
-                        countdownEl.innerText = "";
-                        msg.innerText = "Applying Audio Effects with FFmpeg...";
-                        
-                        // STEP 3: Request backend to apply effects
+                        msg.innerText = 'Applying audio effects…';
                         await applyAudioEffects(data1.downloadUrl, effect, data1.videoTitle);
                     }
                 }, 1000);
-
             } catch (err) {
-                overlay.style.display = 'none';
-                results.innerHTML = `<div class="error"><p>Error: ${err.message}</p></div>`;
+                setOverlayVisible(false);
+                results.innerHTML = `<div class="error"><p>${escapeHtml(err.message)}</p></div>`;
             }
+        }
+
+        function escapeHtml(s) {
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
         }
 
         async function applyAudioEffects(downloadUrl, effect, videoTitle) {
             const results = document.getElementById('results');
-            const overlay = document.getElementById('loadingOverlay');
 
             try {
                 const res2 = await fetch('/apply-effect', {
@@ -107,31 +121,25 @@
                 const data2 = await res2.json();
                 if (!data2.success) throw new Error(data2.message);
 
-                // Final Success State
-                overlay.style.display = 'none';
-                
-                // Encode title to handle special characters in the URL safely
-                const encodedTitle = encodeURIComponent(data2.song_title);
+                setOverlayVisible(false);
 
-                // Find this section inside your applyAudioEffects function
+                const encodedTitle = encodeURIComponent(data2.song_title);
+                const safeTitle = escapeHtml(data2.song_title);
+
                 results.innerHTML = `
                     <div class="success">
-                        <p style="color: white; font-family: 'Press Start 2P'; margin-bottom: 25px;">
-                            ${data2.song_title}
-                        </p>
-                        
-                        <a href="/download/${data2.tempFilename}?title=${encodedTitle}" style="text-decoration: none;">
-                            <button class="download-btn">DOWNLOAD MP3</button>
-                        </a>
-                        
-                        <button onclick="location.reload()" class="reset-btn">
-                            CONVERT ANOTHER
-                        </button>
+                        <p class="track-title">${safeTitle}</p>
+                        <div class="actions">
+                            <a href="/download/${data2.tempFilename}?title=${encodedTitle}" style="text-decoration: none;">
+                                <button type="button" class="download-btn">Download MP3</button>
+                            </a>
+                            <button type="button" onclick="location.reload()" class="reset-btn">Convert another</button>
+                        </div>
                     </div>
                 `;
             } catch (err) {
-                overlay.style.display = 'none';
-                results.innerHTML = `<div class="error"><p>Processing Error: ${err.message}</p></div>`;
+                setOverlayVisible(false);
+                results.innerHTML = `<div class="error"><p>${escapeHtml(err.message)}</p></div>`;
             }
         }
     </script>
