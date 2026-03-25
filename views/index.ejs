@@ -28,13 +28,20 @@
                     <p class="field-hint">Use the ID after <code>v=</code> or after <code>youtu.be/</code>.</p>
                 </div>
                 <div class="field">
-                    <label for="audioEffect">Audio style</label>
-                    <select id="audioEffect">
-                        <option value="normal" selected>Normal</option>
-                        <option value="sped_up">Sped up</option>
-                        <option value="hq_8D">8D audio</option>
-                        <option value="slow_reverb">Slowed + reverb</option>
-                    </select>
+                    <label for="audioEffectTrigger">Audio style</label>
+                    <div class="custom-select" data-custom-select="audioEffect">
+                        <select id="audioEffect" class="custom-select__native" tabindex="-1" aria-hidden="true">
+                            <option value="normal" selected>Normal</option>
+                            <option value="sped_up">Sped up</option>
+                            <option value="hq_8D">8D audio</option>
+                            <option value="slow_reverb">Slowed + reverb</option>
+                        </select>
+                        <button type="button" class="custom-select__trigger" id="audioEffectTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="audioEffectList">
+                            <span class="custom-select__value" aria-live="polite"></span>
+                            <span class="custom-select__chevron" aria-hidden="true"></span>
+                        </button>
+                        <ul class="custom-select__list" id="audioEffectList" role="listbox" hidden></ul>
+                    </div>
                 </div>
                 <button type="button" id="convert-btn" onclick="startConversion()">Convert</button>
             </div>
@@ -56,6 +63,80 @@
     </div>
 
     <script>
+        (function initCustomAudioSelect() {
+            const wrap = document.querySelector('[data-custom-select="audioEffect"]');
+            if (!wrap) return;
+            const select = wrap.querySelector('#audioEffect');
+            const trigger = wrap.querySelector('.custom-select__trigger');
+            const valueEl = wrap.querySelector('.custom-select__value');
+            const list = wrap.querySelector('.custom-select__list');
+
+            function syncLabel() {
+                const opt = select.options[select.selectedIndex];
+                valueEl.textContent = opt ? opt.text : '';
+                list.querySelectorAll('[role="option"]').forEach((li) => {
+                    const on = li.dataset.value === select.value;
+                    li.classList.toggle('is-selected', on);
+                    li.setAttribute('aria-selected', on ? 'true' : 'false');
+                });
+            }
+
+            function buildList() {
+                list.innerHTML = '';
+                for (let i = 0; i < select.options.length; i++) {
+                    const opt = select.options[i];
+                    const li = document.createElement('li');
+                    li.setAttribute('role', 'option');
+                    li.dataset.value = opt.value;
+                    li.textContent = opt.text;
+                    li.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        select.value = opt.value;
+                        syncLabel();
+                        close();
+                        trigger.focus();
+                    });
+                    list.appendChild(li);
+                }
+                syncLabel();
+            }
+
+            function close() {
+                list.hidden = true;
+                trigger.setAttribute('aria-expanded', 'false');
+                wrap.classList.remove('is-open');
+            }
+
+            function open() {
+                list.hidden = false;
+                trigger.setAttribute('aria-expanded', 'true');
+                wrap.classList.add('is-open');
+            }
+
+            function toggle() {
+                if (list.hidden) open();
+                else close();
+            }
+
+            buildList();
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggle();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!wrap.contains(e.target)) close();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !list.hidden) {
+                    close();
+                    trigger.focus();
+                }
+            });
+        })();
+
         function setOverlayVisible(visible) {
             const overlay = document.getElementById('loadingOverlay');
             overlay.classList.toggle('is-visible', visible);

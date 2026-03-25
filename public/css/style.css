@@ -181,8 +181,7 @@ label {
 
 #convert-btn,
 .download-btn,
-.reset-btn,
-#audioEffect {
+.reset-btn {
   width: 100%;
   font-family: var(--font);
   font-size: 0.8rem;
@@ -230,41 +229,119 @@ label {
   border-color: #555;
 }
 
-#audioEffect {
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: var(--primary);
-  color: #fff;
+/* Hidden native select — real value for JS; list is custom HTML for centered options */
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select__native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.custom-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font);
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  text-transform: none;
-  padding-left: 2.75rem;
-  padding-right: 2.75rem;
+  color: #fff;
+  background-color: var(--primary);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 1rem 2.75rem 1rem 1.25rem;
+  cursor: pointer;
   text-align: center;
-  text-align-last: center;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.85rem center;
-  background-size: 1.25rem;
+  position: relative;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-#audioEffect:hover {
+.custom-select__trigger:hover {
   background-color: var(--primary-hover);
 }
 
-#audioEffect:focus {
+.custom-select__trigger:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(230, 30, 37, 0.35);
 }
 
-#audioEffect option {
-  background-color: var(--surface);
-  color: var(--text);
+.custom-select__value {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.custom-select__chevron {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.custom-select.is-open .custom-select__chevron {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-select__list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.custom-select__list[hidden] {
+  display: none !important;
+}
+
+.custom-select__list [role="option"] {
+  margin: 0;
+  padding: 0.75rem 1rem;
   font-family: var(--font);
+  font-size: 0.875rem;
   font-weight: 600;
-  text-transform: none;
-  letter-spacing: normal;
+  color: var(--text);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.custom-select__list [role="option"]:hover,
+.custom-select__list [role="option"]:focus {
+  outline: none;
+  background: rgba(230, 30, 37, 0.15);
+}
+
+.custom-select__list [role="option"].is-selected {
+  background: rgba(230, 30, 37, 0.28);
+  color: #fff;
 }
 
 .bottom-container {
