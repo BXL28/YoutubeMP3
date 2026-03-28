@@ -57,7 +57,8 @@ Click **Convert** and wait for the system to fetch the link and apply effects. O
 </p>
 
 <p align="center">
-  <img width="800" alt="Download Ready" src="https://github.com/user-attachments/assets/6ecde917-a7bb-4e8c-99f2-095e70f82ab8" />
+  <img width="1859" height="881" alt="image" src="https://github.com/user-attachments/assets/18b0f095-0ad1-4595-a162-a2139c451062" />
+
 </p>
 
 
