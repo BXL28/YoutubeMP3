@@ -39,18 +39,21 @@ Find the characters following `v=` in any YouTube URL.
 Paste the ID into the input field and choose your desired audio enhancement.
 
 <p align="center">
-  <img width="800" alt="Input Step" src="https://github.com/user-attachments/assets/fcd51620-f4de-42be-a2e9-5dbf747ac684" />
+  <img width="1864" height="887" alt="image" src="https://github.com/user-attachments/assets/d6b3005e-3f55-42eb-9d21-28409f1ecad6" />
+
 </p>
 
 <p align="center">
-  <img width="800" alt="Select Effects" src="https://github.com/user-attachments/assets/8bcedf3e-212d-4ae3-acd4-5405752036f0" />
+  <img width="583" height="526" alt="image" src="https://github.com/user-attachments/assets/39aecc0f-d30c-4480-ada8-c174980de640" />
+
 </p>
 
 ### 3. Convert & Download
 Click **Convert** and wait for the system to fetch the link and apply effects. Once ready, click the download button to save your enhanced MP3!
 
 <p align="center">
-  <img width="800" alt="Processing" src="https://github.com/user-attachments/assets/aa3d17a2-092b-46a7-bfcb-22127466c56f" />
+  <img width="1468" height="702" alt="image" src="https://github.com/user-attachments/assets/eb808cfe-64c5-485b-93b6-fbc94b221621" />
+
 </p>
 
 <p align="center">
