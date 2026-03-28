@@ -437,7 +437,56 @@ label {
   letter-spacing: 0.04em;
 }
 
-.loading-overlay lottie-player {
-  width: min(280px, 70vw);
-  height: min(280px, 70vw);
+.loading-overlay__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+}
+
+.loading-eq {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 7px;
+  height: 56px;
+}
+
+.loading-eq span {
+  display: block;
+  width: 9px;
+  height: 48px;
+  border-radius: 5px;
+  transform-origin: bottom center;
+  background: linear-gradient(180deg, #ff5a5f 0%, var(--primary) 55%, #b8141a 100%);
+  animation: loading-eq 1.05s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(230, 30, 37, 0.35);
+}
+
+.loading-eq span:nth-child(1) {
+  animation-delay: 0s;
+}
+.loading-eq span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.loading-eq span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.loading-eq span:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.loading-eq span:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loading-eq {
+  0%,
+  100% {
+    transform: scaleY(0.28);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }

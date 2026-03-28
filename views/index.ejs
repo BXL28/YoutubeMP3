@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <title>YouTube to MP3</title>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
     <main>
@@ -51,13 +50,11 @@
     </main>
 
     <div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
-        <lottie-player
-            src="/UkuleleLoading.json"
-            background="transparent"
-            speed="1"
-            loop
-            autoplay>
-        </lottie-player>
+        <div class="loading-overlay__visual" aria-hidden="true">
+            <div class="loading-eq">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
         <p id="loading-msg" class="loading-overlay__msg">Preparing request…</p>
         <p id="countdown" class="loading-overlay__countdown"></p>
     </div>
